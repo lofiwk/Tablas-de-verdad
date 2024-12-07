@@ -1,8 +1,12 @@
+import os
 import numpy as np
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
+
+# Crear carpeta si no existe
+os.makedirs("excels/a", exist_ok=True)
 
 # Definir entradas (S1, S2, S3, S4, S5)
 entradas = ["S1", "S2", "S3", "S4", "S5"]
@@ -16,7 +20,6 @@ tabla_verdad = pd.DataFrame(combinaciones, columns=entradas)
 # Definir salidas (B1, B2, B3, B4) basadas en tus reglas
 def calcular_salidas(filas):
     S1, S2, S3, S4, S5 = filas
-    # Reglas (puedes modificarlas según tu problema)
     if S1 == S2 == S3 == S4 == S5:  # Todos iguales
         return [1, 1, 1, 1]
     elif sum([S1, S2, S3, S4, S5]) == 3:  # 3 cerrados
@@ -60,11 +63,10 @@ for col in ws.columns:
     max_length = max(len(str(cell.value)) for cell in col if cell.value)
     ws.column_dimensions[col[0].column_letter].width = max_length + 4
 
-# Ajustar altura de filas para mayor espacio
+# Ajustar altura de filas
 for row in ws.iter_rows():
     ws.row_dimensions[row[0].row].height = 20
 
-# Guardar archivo
-wb.save("tabla_verdad_formateada_mejorada.xlsx")
-
-print("Archivo Excel mejorado creado: tabla_verdad_formateada_mejorada.xlsx")
+# Guardar archivo en la carpeta específica
+wb.save("excels/a/tabla_verdad_a.xlsx")
+print("Archivo Excel mejorado creado: excels/a/tabla_verdad_a.xlsx")
