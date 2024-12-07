@@ -1,8 +1,12 @@
+import os
 import numpy as np
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
+
+# Obtener el directorio donde se encuentra el script
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Definir entradas (S1, S2, S3, S4, S5)
 entradas = ["S1", "S2", "S3", "S4", "S5"]
@@ -13,19 +17,29 @@ combinaciones = np.array(np.meshgrid([0, 1], [0, 1], [0, 1], [0, 1], [0, 1])).T.
 # Crear DataFrame con las combinaciones
 tabla_verdad = pd.DataFrame(combinaciones, columns=entradas)
 
-# Definir salidas (B1, B2, B3, B4)
+# Función para calcular las salidas universales según el enunciado "a"
 def calcular_salidas(filas):
     S1, S2, S3, S4, S5 = filas
-    # Ejemplo genérico: Todas apagadas por defecto
-    return [0, 0, 0, 0]
+    if S1 == S2 == S3 == S4 == S5:  # Todos iguales
+        return [1, 1, 1, 1]  # Todas encendidas
+    else:
+        return [0, 0, 0, 0]  # Todas apagadas
 
-# Aplicar las reglas para calcular las salidas
+# Aplicar las reglas para calcular las salidas universales
 tabla_verdad[["B1", "B2", "B3", "B4"]] = tabla_verdad.apply(calcular_salidas, axis=1, result_type="expand")
+
+# Añadir explicaciones textuales de los casos
+tabla_verdad["Identificador_Casos"] = (
+    "Caso A: Sin cambios. | "
+    "Caso B: Invertir entradas (S1-S5). | "
+    "Caso C: Invertir salidas (B1-B4). | "
+    "Caso D: Invertir entradas y salidas."
+)
 
 # Crear archivo Excel con formato
 wb = Workbook()
 ws = wb.active
-ws.title = "Tabla de Verdad"
+ws.title = "Tabla de Verdad Universal"
 
 # Escribir encabezados con estilo
 encabezados = list(tabla_verdad.columns)
@@ -55,6 +69,7 @@ for col in ws.columns:
 for row in ws.iter_rows():
     ws.row_dimensions[row[0].row].height = 20
 
-# Guardar archivo en el mismo directorio
-wb.save("tabla_verdad.xlsx")
-print("Archivo Excel creado: tabla_verdad.xlsx")
+# Guardar archivo en el mismo directorio que el script
+output_path = os.path.join(script_dir, "tabla_verdad_a_con_casos.xlsx")
+wb.save(output_path)
+print(f"Archivo Excel creado: {output_path}")
