@@ -1,0 +1,20 @@
+# Excluir archivos temporales de Excel
+*.~lock.*
+
+# Excluir archivos Excel generados
+*.xlsx
+
+# Excluir archivos de prueba o temporales
+*.txt
+*.tmp
+
+# Excluir el entorno virtual (si lo usas)
+venv/
+env/
+
+# Excluir configuraciones específicas del editor
+.vscode/
+.idea/
+
+# Excluir cualquier otro archivo innecesario
+Tablas.csv
