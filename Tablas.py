@@ -1,12 +1,8 @@
-import os
 import numpy as np
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
-
-# Crear carpeta si no existe
-os.makedirs("excels/a", exist_ok=True)
 
 # Definir entradas (S1, S2, S3, S4, S5)
 entradas = ["S1", "S2", "S3", "S4", "S5"]
@@ -17,19 +13,11 @@ combinaciones = np.array(np.meshgrid([0, 1], [0, 1], [0, 1], [0, 1], [0, 1])).T.
 # Crear DataFrame con las combinaciones
 tabla_verdad = pd.DataFrame(combinaciones, columns=entradas)
 
-# Definir salidas (B1, B2, B3, B4) basadas en tus reglas
+# Definir salidas (B1, B2, B3, B4)
 def calcular_salidas(filas):
     S1, S2, S3, S4, S5 = filas
-    if S1 == S2 == S3 == S4 == S5:  # Todos iguales
-        return [1, 1, 1, 1]
-    elif sum([S1, S2, S3, S4, S5]) == 3:  # 3 cerrados
-        return [1, 0, 1, 0]
-    elif sum([S1, S2, S3, S4, S5]) == 1:  # Solo 1 cerrado
-        return [0, 1, 0, 0]
-    elif sum([S1, S2, S3, S4, S5]) == 2:  # Solo 2 cerrados
-        return [0, 0, 0, 0]
-    else:
-        return [0, 0, 0, 0]  # Por defecto, todas apagadas
+    # Ejemplo genérico: Todas apagadas por defecto
+    return [0, 0, 0, 0]
 
 # Aplicar las reglas para calcular las salidas
 tabla_verdad[["B1", "B2", "B3", "B4"]] = tabla_verdad.apply(calcular_salidas, axis=1, result_type="expand")
@@ -67,6 +55,6 @@ for col in ws.columns:
 for row in ws.iter_rows():
     ws.row_dimensions[row[0].row].height = 20
 
-# Guardar archivo en la carpeta específica
-wb.save("excels/a/tabla_verdad_a.xlsx")
-print("Archivo Excel mejorado creado: excels/a/tabla_verdad_a.xlsx")
+# Guardar archivo en el mismo directorio
+wb.save("tabla_verdad.xlsx")
+print("Archivo Excel creado: tabla_verdad.xlsx")
